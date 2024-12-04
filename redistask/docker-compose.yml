@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./book-store-cache
+    container_name: book-store-cache
+    ports:
+      - "5000:5000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SESSION_TTL: 1800
+    depends_on:
+      - redis
+
+  frontend:
+    build:
+      context: ./book-store-frontend
+    container_name: book-store-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      REDIS_HOSTS: "local:redis:6379"

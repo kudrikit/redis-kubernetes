@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-store-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: book-store-backend
+  template:
+    metadata:
+      labels:
+        app: book-store-backend
+    spec:
+      containers:
+        - name: book-store-backend
+          image: kudaibergen13/book-store-cache
+          ports:
+            - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: redis-service
+            - name: REDIS_PORT
+              value: "6379"
